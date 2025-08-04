@@ -40,11 +40,17 @@ class CodingQueryGraph:
         """Node to interact with the LLM."""
         query=state['query']
         try:
-            model = self.client.get_generative_model("gemini-1.5-flash")
-            response = model.generate_content(
-                query,
-                generation_config=GenerateContentConfig(response_mime_type="text"),
-                system_instruction="You only give answers to coding queries. For any other type of question, politely decline."
+            """ comented and not comented contents are work"""
+            response = self.client.models.generate_content(
+                model="gemini-2.0-flash",
+                # contents=[{"role": "user", "parts": [{"text": query}]}],
+                contents=query,
+                config=GenerateContentConfig(
+                    temperature=0.5,
+                    max_output_tokens=1024,
+                    top_p=0.95,
+                    top_k=40,
+                ),
             )
 
             if response.text:

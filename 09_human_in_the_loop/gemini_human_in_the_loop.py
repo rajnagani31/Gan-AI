@@ -7,7 +7,7 @@ from langchain.chat_models import init_chat_model
 from dotenv import load_dotenv
 from langgraph.prebuilt import ToolNode,tools_condition
 from langchain_google_genai import ChatGoogleGenerativeAI
-import google.generativeai as ge
+# import google.generativeai as ge
 
 load_dotenv()
 # client=genai.Client()

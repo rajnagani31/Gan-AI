@@ -70,7 +70,7 @@ def create_chat_graph(checkpointer):
 # user
 def main():
     DB_URL="mongodb://admin:admin@localhost:27017" 
-    config={"configurable":{"thread_id":21}}
+    config={"configurable":{"thread_id":22}}
     with MongoDBSaver.from_conn_string(DB_URL) as mongo_check_pointer:
         graph_with_cheak=create_chat_graph(mongo_check_pointer)
         while True:
