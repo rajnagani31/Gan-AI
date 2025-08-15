@@ -6,7 +6,7 @@ from google import genai
 from pydantic import BaseModel
 import os
 from openai import OpenAI
-from google.genai.types import GenerateContentConfig, HttpOptions
+from google.genai.types import GenerateContentConfig
 
 load_dotenv()
 

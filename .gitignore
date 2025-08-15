@@ -1,6 +1,6 @@
 .venv
-02_chat__LLM\.env
-09_human_in_the_loop\.env
-08_langgraph_part_2\.env
-07_lengraph
 
+*.env
+**/.env
+
+*.venv
