@@ -1,68 +1,103 @@
-from typing_extensions import TypedDict
-from typing import Annotated
-from langgraph.graph.message import add_messages
-from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph,START,END
+from typing import Literal,Annotated
+from typing_extensions import TypedDict
 from dotenv import load_dotenv
-from google import genai
-from langgraph.checkpoint.mongodb import MongoDBSaver
-
+from openai import OpenAI
+from langgraph.graph.message import add_messages
+import logging
+from langchain_core.tools import tool
+from langgraph.prebuilt import ToolNode,tools_condition
+from langchain.chat_models import init_chat_model
+# from math import sum
+import time
 load_dotenv()
-# client=genai.Client()
-
-print('1')
-
+client= OpenAI()
 
 class State(TypedDict):
-    messages:Annotated[list,add_messages]
-    print('2')
+    message :Annotated[list,add_messages]
+
+class Cheakponting:
+    def __init__(self):
+        try:
+            self.client = client
+            self.graph = self.Start_graph()
+        except Exception as e:
+            logging.error(f"ERROR initializing Withe opanai {e}")
+
+            raise
 
 
-llm= init_chat_model( model_provider="openai",model="gpt-4.1",)
-# llm= init_chat_model( model_provider="google_genai",model="gpt-4.1",)
+    @tool
+    def hi_hello(query):
+        "you Give onle basic query answers like 'hi','hello','how are you',what is your name ect...." 
+        # print(f"toll query:{query}")
 
-def compile_graph_with_checkpinter(checkpointer):
-    graph_with_checkpointer=graph_builder.compile(checkpointer=checkpointer)
-    print('3')
-
-    return graph_with_checkpointer
-
-
-def chat_node(state:State):
-    print('a')
-
-    response=llm.invoke(state['messages'])
-    print('b')
-
-    print('4')
-    print('c')
-    return {'messages':[response]}
-
-print('d')
-graph_builder=StateGraph(State)
-
-graph_builder.add_node("chat_node",chat_node)
-
-graph_builder.add_edge(START,"chat_node")
-graph_builder.add_edge("chat_node",END)
-
-graph=graph_builder.compile()
-
-def main():
-    print('e')
-    DB_URL="mongodb://admin:admin@localhost:27017" 
-    print('d')
-    config={"configurable":{"thread_id":1}}
-    print('k')
-    with MongoDBSaver.from_conn_string(DB_URL) as mongo_check_pointer:
-        print('j')
-        query=input(">>")
-        print("call")
-        graph_with_mongo=compile_graph_with_checkpinter(mongo_check_pointer)
-        print('call end')
-        result=graph_with_mongo.invoke({'messages': [{"role": "assistant", "content": query}]},config) # is work
-        print('result')
-        # result=graph_with_mongo.invoke({'messages':query},config) # is both work ok
-        print(result)
+        return query
     
-main()    
+    @tool
+    def three_number_add(*query):
+        "You calculate of many number with addition"
+        print("args:",query)
+        return sum(query)
+    
+    tools=[three_number_add,hi_hello]
+    
+
+
+    def Start_graph(self):
+        # graph
+        tool_node=ToolNode(tools=self.tools)
+        graph_builder= StateGraph(State)
+        
+        # Node
+        graph_builder.add_node("chat_bot",self.chat_bot)
+        graph_builder.add_node("tools",tool_node)
+
+        # adge
+        graph_builder.add_edge(START,"chat_bot")
+        graph_builder.add_conditional_edges(
+            "chat_bot",
+            tools_condition
+        )
+        graph_builder.add_edge('tools','chat_bot')
+        graph_builder.add_edge("chat_bot",END)
+
+        return graph_builder.compile()
+
+    llm = init_chat_model(model_provider="openai", model="gpt-4.1")
+    llm_with_tools = llm.bind_tools(tools=tools)
+
+    def chat_bot(self,state :State):
+        query= state['message']
+        # print('query:',query)
+        
+        messages= self.llm_with_tools.invoke(query)
+        # print('messages:',messages)
+        # time.sleep(6)
+        return {'message':[messages]}
+
+    def run(self,query):
+        _state = State(
+            message=[{'role':'user','content':query}]
+        )
+        try:
+            print('yes')
+            result= self.graph.invoke(_state)
+            return result
+        except Exception as e:
+            print('no')
+            logging.error(f"Error invoking the graph: {e}")
+            return e
+def main():
+
+    query=input(">> ")
+    _state= State(
+        message=[{'role':'user','content':query}]
+    )
+    result=Cheakponting().chat_bot(_state)
+    # result= Cheakponting().run(query)
+    print(result)
+
+main()
+# ans=Cheakponting().three_number_add(1,2,3,4,5)
+# print(ans)
