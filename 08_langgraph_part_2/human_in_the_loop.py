@@ -34,6 +34,8 @@ def coding_tool(query : str):
     
     
     """
+    print("⚠️ start coding")
+
     return query
 
 def add_three_number(a ,b,c : int):
