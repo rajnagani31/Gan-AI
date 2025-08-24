@@ -21,17 +21,8 @@ response=client.chat.completions.create(
     model= "gpt-4.1-mini",
     messages=[
         {'role':'system','content':SYSTEM_PROMPT},
-        {'role':'user','content':'my name is raj'},
+        {'role':'user','content':'Indian python market data'},
 
-        {'role':'assistant','content':'Hello Raj! How can I assist you today?'},
-        {'role':'user','content':'give syntext of prime number find'},
-        {'role':'user','content':'indian stock market?'},
-
-
-
-        
-
-        
 
     ]
 )

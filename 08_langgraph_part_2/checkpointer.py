@@ -1,6 +1,7 @@
 from langgraph.graph import StateGraph,START,END
 from typing import Literal,Annotated
 from typing_extensions import TypedDict
+from langgraph.checkpoint.mongodb import MongoDBSaver
 from dotenv import load_dotenv
 from openai import OpenAI
 from langgraph.graph.message import add_messages
@@ -34,7 +35,7 @@ class Cheakponting:
     
 
 
-    def Start_graph(self):
+    def Start_graph(self , cheakpointing):
         # graph
         tool_node=ToolNode(tools=self.tools)
         # print("tools:",tool_node)
@@ -59,7 +60,7 @@ class Cheakponting:
         print('5')
         graph_builder.add_edge("chat_bot",END)
 
-        return graph_builder.compile()
+        return graph_builder.compile(cheakpointing)
 
 
 
@@ -71,24 +72,30 @@ class Cheakponting:
         messages= llm_with_tools.invoke(query)
         return {'messages':[messages]}
 
-    
+    # def compile_graph_with_cheakpointing(self,cheakpointing):
+    #     graph_with_cheakpointer = graph_builder.compile()
+    #     return graph_with_cheakpointer
 def main():
+    DB_URL = "mongodb://admin:admin@localhost:27017/"
+    config ={ "configurable" :  { "thread_id" : 50}}
 
-    query=input(">> ")
-    _state= State(
-        messages=[{'role':'user','content':query}]
-    )
-    start=Cheakponting().Start_graph()
-    result = start.invoke(_state)  # Execute the graph
-
-    if 'messages' in result:
-        final_message = result['messages'][-1]
-        if hasattr(final_message, 'content'):
-            print(final_message.content)
+    with MongoDBSaver.from_conn_string(DB_URL) as mongo_cheakpointer:
+        graph_with_mongo = Cheakponting().Start_graph(mongo_cheakpointer)
+        query=input(">> ")
+        _state= State(
+            messages=[{'role':'user','content':query}],
+            )
+        # start=Cheakponting().Start_graph()
+        result = graph_with_mongo.invoke(_state,config)  # Execute the graph
+        # for event in strem.
+        if 'messages' in result:
+            final_message = result['messages'][-1]
+            if hasattr(final_message, 'content'):
+                print(final_message.content)
+            else:
+                print(final_message)
         else:
-            print(final_message)
-    else:
-        print(result)
+            print(result)
 
                 
 if __name__ == "__main__":
