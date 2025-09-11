@@ -15,21 +15,23 @@ load_dotenv()
 client= OpenAI()
 
 class State(TypedDict):
-    messages :Annotated[list,add_messages]
+    messages :Annotated[list,add_messages] # NOTE: Annotated method are stord a data in list formate first message is Hi and new message is How are you they stord ["hi","how are you"] 
 
-class Cheakponting:
-    @tool
-    def hi_hello(query : str):
+
+@tool
+def hi_hello(query : str):
         "you Give onle basic query answers like 'hi','hello','how are you',what is your name ect...." 
         # print(f"toll query:{query}")
         print("⚠️ start hi_hello")
         return query
     
-    @tool
-    def three_number_add(numbers :list):
+@tool
+def three_number_add(numbers :list):
         "You calculate of many number with addition"
         print("args:",numbers)
         return sum(numbers)
+class Cheakponting:
+    
     
     tools=[three_number_add,hi_hello]
     
@@ -77,7 +79,7 @@ class Cheakponting:
     #     return graph_with_cheakpointer
 def main():
     DB_URL = "mongodb://admin:admin@localhost:27017/"
-    config ={ "configurable" :  { "thread_id" : 50}}
+    config ={ "configurable" :  { "thread_id" : 10}}
 
     with MongoDBSaver.from_conn_string(DB_URL) as mongo_cheakpointer:
         graph_with_mongo = Cheakponting().Start_graph(mongo_cheakpointer)
