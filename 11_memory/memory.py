@@ -34,6 +34,14 @@ config ={
             # "embedding_model_dims": 768, --> they stell not work but you can try again
         }
     },
+     "graph_store": {
+        "provider": "neo4j",
+        "config": {
+            "url": "bolt://localhost:7687",
+            "username": "neo4j",
+            "password": "reform-william-center-vibrate-press-5829"
+        }
+    },
 }
 
 
@@ -54,9 +62,9 @@ print("Search Result:")
 # OPEN AI
 def user_query():
     while True:
-        start = time.time()
         user_query = input(' > ')
-        relevent_memory = mem_client.search(query = user_query , user_id = "2") 
+        start = time.time()
+        relevent_memory = mem_client.search(query = user_query , user_id = "1") 
 
         memories = [f"ID:{mem.get('id')} Memory:{mem.get("memory")}" for mem in relevent_memory.get("results")]
 
@@ -76,7 +84,7 @@ def user_query():
         mem_client.add([
             {'role':"user" , "content" : user_query},
             {'role':'assitant' , "content" : response},
-        ] ,user_id="2")
+        ] ,user_id="1")
 
 # def call_openai(query ,SYSTEM_PROMPT):
 #     response = client.chat.completions.create(
