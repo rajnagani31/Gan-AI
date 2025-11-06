@@ -1,45 +1,35 @@
 from dotenv import load_dotenv
-
 from pathlib import Path
+import os
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 load_dotenv()
 
-pdf_path = Path(__file__).parent / "nodejs.pdf"
+# oading
+path = Path(__file__).parent / "nodejs.pdf"
+docs = PyPDFLoader(file_path=path).load()   
 
-# Loading
-loader = PyPDFLoader(file_path=pdf_path)
-docs = loader.load()  # Read PDF File
-print('1')
 # Chunking
-text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,
-    chunk_overlap=400
+text_spliter = RecursiveCharacterTextSplitter(
+    chunk_size = 1000,
+    chunk_overlap = 400
 )
-print('2')
 
-split_docs = text_splitter.split_documents(documents=docs)
+docs_with_spliter = text_spliter.split_documents(documents=docs)
 
-# Vector Embeddings
-embedding_model = OpenAIEmbeddings(
-    model="text-embedding-3-large"
-)
-print('3')
+# vector Embeddings
+embedding_model =OpenAIEmbeddings(model= "text-embedding-3-large")
 
-# Using [embedding_model] create embeddings of [split_docs] and store in DB
+# using [Embeddings mode] create embedding of spliting and stord in DB
 
 vector_store = QdrantVectorStore.from_documents(
-    documents=split_docs,
-    url="http://localhost:6333",
-    collection_name="learning_vectors",
-    embedding=embedding_model
+    documents=docs_with_spliter,
+    url = "http://localhost:6333",
+    collection_name = "learning_vectors",
+    embedding = embedding_model
 )
-print('4')
 
-print("Indexing of Documents Done...")
-
-
-
+print("Indexing of documents Done")
