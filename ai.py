@@ -1,15 +1,12 @@
-from openai import OpenAI
+import pytesseract
+from PIL import Image
 
-from dotenv import load_dotenv
-load_dotenv()
-client = OpenAI()
+# Set the path to the Tesseract executable (adjust for your system)
+pytesseract.pytesseract.tesseract_cmd = r'D:\Theory-Consepts\GenAI\Langchain\img' 
 
-r = client.chat.completions.create(
-    model="gpt-4.1",
-        messages=[
-            {'role':'user' , 'content':'hi'},
-        ]
+# Load the image
+img = Image.open('sample_image.png')
 
-)
-
-print(r.choices[0].message.content)
+# Perform OCR
+text = pytesseract.image_to_string(img)
+print(text)

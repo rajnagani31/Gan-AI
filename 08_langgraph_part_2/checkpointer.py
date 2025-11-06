@@ -15,7 +15,7 @@ load_dotenv()
 client= OpenAI()
 
 class State(TypedDict):
-    messages :Annotated[list,add_messages] # NOTE: Annotated method are stord a data in list formate first message is Hi and new message is How are you they stord ["hi","how are you"] 
+    messages :Annotated[list,add_messages] # NOTE: Annotated(add_messages) method are stord a data in list formate first message is Hi and new message is How are you they stord ["hi","how are you"] 
 
 
 @tool
@@ -30,6 +30,8 @@ def three_number_add(numbers :list):
         "You calculate of many number with addition"
         print("args:",numbers)
         return sum(numbers)
+
+
 class Cheakponting:
     
     
