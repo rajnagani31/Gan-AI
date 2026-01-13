@@ -20,10 +20,6 @@ response=client.chat.completions.create(
     messages=[
         {'role':'system','content':SYSTEM_PROMPT},
         {'role':'user','content':'what date and time of today'},
-        
-
-
-
     ]
 )
 

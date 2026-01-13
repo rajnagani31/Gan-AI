@@ -1,9 +1,12 @@
+# flake8: noqa
+
 # build RAG PDF chatbot with OpenAI and LangChain
 
 from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from openai import OpenAI
+import time
 load_dotenv()
 
 client = OpenAI()
@@ -22,7 +25,7 @@ vector_db = QdrantVectorStore.from_existing_collection(
 query = input('>>')
 
 # Stap 2 : Vector similarity search [query] in DB
-
+start = time.time()
 search_results = vector_db.similarity_search(
     query=query
 )
@@ -51,3 +54,8 @@ response = client.chat.completions.create(
 
 print("Chatbot response generated...................................................")
 print(f"🤖: {response.choices[0].message.content}")
+time_taken = time.time() - start
+print(f"Time taken to answer the query: {time_taken} seconds")
+print(f"Toke :",response.usage.total_tokens)
+print(f"input Toke :",response.usage.prompt_tokens)
+print(f"output Token :",response.usage.completion_tokens)
