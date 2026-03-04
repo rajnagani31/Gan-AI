@@ -6,6 +6,8 @@ from google import genai
 from google.genai import types
 import json , time ,logging
 from langsmith import traceable
+
+
 load_dotenv()
 # OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
