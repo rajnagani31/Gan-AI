@@ -21,3 +21,8 @@ def read_root(Query: str):
     )
     print(response)
     return {"response": response, "llm_answers": response.message.content}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
