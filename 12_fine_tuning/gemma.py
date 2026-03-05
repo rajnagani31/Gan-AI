@@ -35,4 +35,10 @@ def login(username: str, password: str):
     else:
         return {"message": "Invalid credentials"}, 401
     
-    
+
+@app.post("/create_jwt")
+def create_jwt(username: str):
+    # Implement your JWT creation logic here
+    if username == "admin":
+        return {"jwt": "your_jwt_token_here"}
+    else: return {"message": "Invalid username"}, 401
