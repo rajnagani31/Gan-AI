@@ -21,3 +21,24 @@ def read_root(Query: str):
     )
     print(response)
     return {"response": response, "llm_answers": response.message.content}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+@app.post("/login")
+def login(username: str, password: str):
+    # Implement your authentication logic here
+    if username == "admin" and password == "password":
+        return {"message": "Login successful"}
+    else:
+        return {"message": "Invalid credentials"}, 401
+    
+
+@app.post("/create_jwt")
+def create_jwt(username: str):
+    # Implement your JWT creation logic here
+    if username == "admin":
+        return {"jwt": "your_jwt_token_here"}
+    else: return {"message": "Invalid username"}, 401
