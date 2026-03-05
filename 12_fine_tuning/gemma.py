@@ -26,3 +26,13 @@ def read_root(Query: str):
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+@app.post("/login")
+def login(username: str, password: str):
+    # Implement your authentication logic here
+    if username == "admin" and password == "password":
+        return {"message": "Login successful"}
+    else:
+        return {"message": "Invalid credentials"}, 401
+    
+    
