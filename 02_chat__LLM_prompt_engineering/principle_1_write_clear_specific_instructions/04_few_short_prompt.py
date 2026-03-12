@@ -36,4 +36,37 @@ response=client.chat.completions.create(
     ]
 )
 
-print(response.choices[0].message.content)
+# print(response.choices[0].message.content)
+
+
+from openai import OpenAI
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+client = OpenAI()   
+
+def get_completion(prompt):
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return response.choices[0].message.content
+
+prompt = f"""
+Your task is to answer in a consistent style.
+
+<child>: Teach me about patience.
+
+<grandparent>: The river that carves the deepest \ 
+valley flows from a modest spring; the \ 
+grandest symphony originates from a single note; \ 
+the most intricate tapestry begins with a solitary thread.
+
+<child>: Teach me about resilience.
+"""
+response = get_completion(prompt)
+print(response)
