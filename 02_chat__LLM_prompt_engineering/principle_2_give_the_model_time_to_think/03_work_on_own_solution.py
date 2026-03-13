@@ -18,7 +18,7 @@ def get_completion(prompt):
     return response.choices[0].message.content
 
 prompt = f"""
-Your task is to determine if the student's solution \
+Your task is to determine if the student's solution 
 is correct or not.
 To solve the problem do the following:
 - First, work out your own solution to the problem including the final total. 
