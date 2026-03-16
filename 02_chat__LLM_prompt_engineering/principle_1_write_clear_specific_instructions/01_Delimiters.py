@@ -10,7 +10,9 @@ def get_completion(prompt):
         model="gpt-3.5-turbo",
         messages=[
             {"role": "user", "content": prompt}
-        ]
+        ],
+        temperature=0,
+        # top_p=1
     )
     return response.choices[0].message.content
 
@@ -37,6 +39,14 @@ Summarize the text delimited by triple backticks \
 into a single sentence.
 ```{text}```
 """
-response = get_completion(prompt)
+
+prompt1 = f"""
+give me correcte answer for this math problem: 
+problem mentioned in the triple backticks:\
+
+```{2+2}```
+
+"""
+response = get_completion(prompt1)
 print(response)
 
