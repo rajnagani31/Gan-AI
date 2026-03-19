@@ -36,7 +36,7 @@ async def process_query(query: str):
         you should answer the user based on the following context and nevigation 
         the user  to open the right page number to know more.
 
-        context : {context}
+        context : ```{context}```
     """
 
     response = client.chat.completions.create(

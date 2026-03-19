@@ -1,30 +1,20 @@
-from langgraph.graph import StateGraph,START,END
-from typing import Literal,Annotated
+from langgraph.graph import StateGraph,START
+from typing import Annotated
 from typing_extensions import TypedDict
 from langgraph.checkpoint.mongodb import MongoDBSaver
 from dotenv import load_dotenv
-from openai import OpenAI
 from langgraph.graph.message import add_messages
-import logging
 from langchain_core.tools import tool
+from langchain_core.messages import SystemMessage
 from langgraph.prebuilt import ToolNode,tools_condition
 from langchain.chat_models import init_chat_model
-# from math import sum
-import time
+from pymongo import MongoClient
 load_dotenv()
-client= OpenAI()
 
 class State(TypedDict):
     messages :Annotated[list,add_messages] # NOTE: Annotated(add_messages) method are stord a data in list formate first message is Hi and new message is How are you they stord ["hi","how are you"] 
 
 
-@tool
-def hi_hello(query : str):
-        "you Give onle basic query answers like 'hi','hello','how are you',what is your name ect...." 
-        # print(f"toll query:{query}")
-        print("⚠️ start hi_hello")
-        return query
-    
 @tool
 def three_number_add(numbers :list):
         "You calculate of many number with addition"
@@ -35,7 +25,7 @@ def three_number_add(numbers :list):
 class Cheakponting:
     
     
-    tools=[three_number_add,hi_hello]
+    tools=[three_number_add]
     
 
 
@@ -62,7 +52,6 @@ class Cheakponting:
         print('4')
         graph_builder.add_edge('tools','chat_bot')
         print('5')
-        graph_builder.add_edge("chat_bot",END)
 
         return graph_builder.compile(cheakpointing)
 
@@ -71,7 +60,12 @@ class Cheakponting:
     def chat_bot(self,state :State):
         llm = init_chat_model(model_provider="openai", model="gpt-4.1")
         llm_with_tools = llm.bind_tools(tools=self.tools)
-        query= state['messages']
+        query = [
+            SystemMessage(
+                content="Answer normal conversation directly. Use tools only when the user asks for arithmetic."
+            ),
+            *state['messages'],
+        ]
         
         messages= llm_with_tools.invoke(query)
         return {'messages':[messages]}
@@ -82,6 +76,9 @@ class Cheakponting:
 def main():
     DB_URL = "mongodb://admin:admin@localhost:27017/"
     config ={ "configurable" :  { "thread_id" : 10}}
+    client = MongoClient(DB_URL)
+    db = client["admin"]
+    collection = db["codebot"]
 
     with MongoDBSaver.from_conn_string(DB_URL) as mongo_cheakpointer:
         graph_with_mongo = Cheakponting().Start_graph(mongo_cheakpointer)
@@ -95,6 +92,7 @@ def main():
         if 'messages' in result:
             final_message = result['messages'][-1]
             if hasattr(final_message, 'content'):
+                print('yes')
                 print(final_message.content)
             else:
                 print(final_message)
