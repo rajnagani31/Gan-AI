@@ -7,6 +7,6 @@ tokens=enc.encode(text)
 
 print("Tokens:",tokens)
 
-Tokens= [13225, 922, 1308, 382, 46358]
+Tokens= [13225, 922, 1308, 382, 46358, 3047]
 decode=enc.decode(Tokens)
 print("Decode Text:",decode)

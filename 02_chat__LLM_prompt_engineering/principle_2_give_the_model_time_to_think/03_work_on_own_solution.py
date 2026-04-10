@@ -54,6 +54,9 @@ Question:
 ```
 I'm building a solar power installation and I need help \
 working out the financials. 
+
+
+
 - Land costs $100 / square foot
 - I can buy solar panels for $250 / square foot
 - I negotiated a contract for maintenance that will cost \
