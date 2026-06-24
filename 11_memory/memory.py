@@ -6,13 +6,14 @@ from google import genai
 from google.genai import types
 import json , time ,logging
 from langsmith import traceable
-
-
 load_dotenv()
-# OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-# client = OpenAI()
-client_b = genai.Client()
+
+# API_KEY_MEM0 = os.getenv("MEM0_API_KEY")
+# mem_client = MemoryClient(api_key=API_KEY_MEM0)
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+opanai_client = OpenAI()
+
 logger = logging.getLogger(__name__)
 
 config ={
@@ -21,14 +22,19 @@ config ={
     "embedder":{
         "provider":"gemini",
         "config": {
-            'api_key':GEMINI_API_KEY,
-            "model":"gemini-embedding-001",
+            'api_key':OPENAI_API_KEY,
+            "model":"text-embedding-3-small",
             "output_dimensionality": 1536, 
         },
 
     },
-    "llm": {"provider": "gemini", "config": {"api_key": GEMINI_API_KEY, "model": "gemini-2.0-flash-001"}},
-    # "llm": {"provider": "openai", "config": {"api_key": OPENAI_API_KEY, "model": "gpt-4.1"}},
+    "llm": {
+        "provider": "openai",
+        "config": {
+            "api_key": OPENAI_API_KEY,
+            "model": "gpt-4.1-mini"
+            }
+    },
 
     "vector_store": {
         "provider": "qdrant",
@@ -56,10 +62,8 @@ mem_client = Memory.from_config(config)
 
 print("Search Result:")
 
-
-
 class LLMHandler:
-    def __init__(self , provider : str ="gemini" , api_key :str =None , model: str = None):
+    def __init__(self , provider : str ="openai" , api_key :str =None , model: str = None):
         self.provider = provider.lower()
         self.api_key = api_key
         self.model = model
@@ -98,7 +102,9 @@ class LLMHandler:
              
 # OPEN AI
 # @traceable
+
 def user_query():
+    USER_ID = "2"
     while True:
         try:
             llm = LLMHandler(
@@ -109,7 +115,9 @@ def user_query():
 
             user_query = input(' > ')
             start = time.time()
-            relevent_memory = mem_client.search(query = user_query , user_id = "1") 
+
+            llm_query = user_query
+            relevent_memory = mem_client.search(query = llm_query , user_id = USER_ID) 
 
             memories = [f"ID:{mem.get('id')} Memory:{mem.get("memory")}" for mem in relevent_memory.get("results")]
 
@@ -128,7 +136,7 @@ def user_query():
             mem_client.add([
                 {'role':"user" , "content" : user_query},
                 {'role':'assitant' , "content" : response},
-            ] ,user_id="1")
+            ] ,user_id=USER_ID)
 
         except KeyboardInterrupt:
              logger.info("Interrupted by user Exiting!")
@@ -165,3 +173,8 @@ def user_query():
 if __name__ == "__main__":
     user_query()
     
+
+
+    # production pipeline
+
+"Last 5 messages + Memory + query"
