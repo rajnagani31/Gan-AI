@@ -20,7 +20,8 @@ chat_completion = client.chat.completions.create(
     stream= True
 )
 
-# print(chat_completion.choices[0].message.content)
-
+print(chat_completion.choices[0].message.content)
+# 
 for chunk in chat_completion:
     print(chunk.choices[0].delta.content, end ="")
+
