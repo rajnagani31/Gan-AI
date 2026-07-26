@@ -24,3 +24,4 @@ chat_completion = client.chat.completions.create(
 
 for chunk in chat_completion:
     print(chunk.choices[0].delta.content, end ="")
+
