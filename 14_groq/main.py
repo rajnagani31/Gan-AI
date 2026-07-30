@@ -37,4 +37,6 @@ for chunk in chat_completion:
     print(chunk.choices[0].delta.content, end ="")
     print(chunk.choices[0].delta.content, end ="")
     print(chunk.choices[0].delta.content, end ="")
+    print(chunk.choices[0].delta.content, end ="")
+    print(chunk.choices[0].delta.content, end ="")
 
