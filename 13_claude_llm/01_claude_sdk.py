@@ -24,3 +24,8 @@ async def main():
             print(f"Done: {message.subtype}")
 
 asyncio.run(main())
+asyncio.run(main())
+asyncio.run(main())
+asyncio.run(main())
+asyncio.run(main())
+asyncio.run(main())
