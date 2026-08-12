@@ -27,6 +27,7 @@ def llm_langchain_openai(user_query: str) -> str:
         model="gpt-4.1-mini",
         api_key=os.environ.get("OPENAI_API_KEY"),
         temperature=0,
+        max_completion_tokens=24,
         max_retries=2,
     )
     response = llm.invoke([
@@ -43,6 +44,7 @@ def llm_langchain_groq(user_query: str) -> str:
         api_key=os.environ.get("GROQ_API_KEY"),
         temperature=0,
         max_retries=2,
+        # max_completion_tokens=240
     )
     response = llm.invoke([
         ("system", SYSTEM_PROMPT),
@@ -54,9 +56,9 @@ def llm_langchain_groq(user_query: str) -> str:
 if __name__ == "__main__":
     query = "What is artificial intelligence?"
     providers = {
-        "OpenAI SDK": llm_openai,
-        "Groq SDK": llm_groq,
-        "LangChain OpenAI": llm_langchain_openai,
+        # "OpenAI SDK": llm_openai,
+        # "Groq SDK": llm_groq,
+        # "LangChain OpenAI": llm_langchain_openai,
         "LangChain Groq": llm_langchain_groq,
     }
 

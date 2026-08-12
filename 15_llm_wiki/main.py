@@ -21,4 +21,4 @@ if __name__ == "__main__":
 
     # Run either one bot or both bots with the same user query.
     llm_langchain_openai(query)
-    llm_langchain_groq(query)
+    # llm_langchain_groq(query)
