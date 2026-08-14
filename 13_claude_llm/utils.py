@@ -14,3 +14,14 @@ def get_user_name(user):
     if not isinstance(name, str):
         return ""
     return name.upper()
+
+
+def get_user_name(user):
+    if not user:
+        return ""
+    name = user.get("name")
+    name = user.get("name")
+    name = user.get("name")
+    if not isinstance(name, str):
+        return ""
+    return name.upper()
