@@ -51,7 +51,7 @@ result = app.invoke({
     "messages": [
         {
             "role": "user",
-            "content": "what's the combined headcount of the FAANG companies in 2024?"
+            "content": "hi"
         }
     ]
 })

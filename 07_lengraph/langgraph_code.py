@@ -156,7 +156,7 @@ def main():
         "Is_codeing_qestion":False, 
     }
 
-    response=graph.invoke(_state)
+    response=graph.astream(_state)
 
     print(response['llm_result'])
 
